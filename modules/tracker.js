@@ -229,7 +229,7 @@ export class Tracker {
         strokeAlpha: game.settings.get("fate-aspect-tracker","AspectDrawingBorderOpacity"),
         text: text,
         fontSize: fontsize,
-        fontFamily: CONFIG.fontDefinitions[game.settings.get("fate-aspect-tracker","AspectDrawingFontFamily")],
+        fontFamily: FontConfig.getAvailableFonts()[FontConfig.getAvailableFonts().indexOf(game.settings.get("fate-aspect-tracker","AspectDrawingFontFamily"))],
         textColor: color,
         points: []
       };
