@@ -231,7 +231,8 @@ export class Tracker {
         fontSize: fontsize,
         fontFamily: FontConfig.getAvailableFonts()[FontConfig.getAvailableFonts().indexOf(game.settings.get("fate-aspect-tracker","AspectDrawingFontFamily"))],
         textColor: color,
-        points: []
+        points: [],
+        flags: {"advanced-drawing-tools": {textStyle: {stroke: "#000000"}}}
       };
 
 	  const d = await game.scenes.viewed.createEmbeddedDocuments('Drawing', [drawing]);
