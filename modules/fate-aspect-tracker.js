@@ -35,7 +35,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingBorderOpacity", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.borderOpacity"),
     scope: "world",
-    config: false,
+    config: true,
     type: Number,
     range: {
         min: 0,
@@ -49,7 +49,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingFillOpacity", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.fillOpacity"),
     scope: "world",
-    config: false,
+    config: true,
     type: Number,
     range: {
         min: 0,
@@ -64,7 +64,7 @@ Hooks.once('init', async() => {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.fontSize"),
     hint: game.i18n.localize("FateAspectTracker.settings.drawing.fontSizeDescription"),
     scope: "world",
-    config: false,
+    config: true,
     type: Number,
     restricted:true,
     default:100
@@ -74,7 +74,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingBorderWidth", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.borderWidth"),
     scope: "world",
-    config: false,
+    config: true,
     type: Number,
     restricted:true,
     default:2
@@ -84,7 +84,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingFontFamily", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.fontFamily"),
     scope: "world",
-    config: false,
+    config: true,
     type:String,
     restricted:true,
     choices:CONFIG.fontFamilies,
@@ -95,7 +95,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingFontDynamicColor", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.fontDynamicColor"),
     scope: "world",
-    config: false,
+    config: true,
     type:Boolean,
     restricted:true,
     default:true
@@ -105,7 +105,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingFontColor", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.fontColor"),
     scope: "world",
-    config: false,
+    config: true,
     type:String,
     restricted:true,
     default:"#000000"
@@ -115,7 +115,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingFillColor", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.fillColor"),
     scope: "world",
-    config: false,
+    config: true,
     type:String,
     restricted:true,
     default:"#FFFFFF"
@@ -125,7 +125,7 @@ Hooks.once('init', async() => {
   game.settings.register("fate-aspect-tracker", "AspectDrawingBorderColor", {
     name: game.i18n.localize("FateAspectTracker.settings.drawing.borderColor"),
     scope: "world",
-    config: false,
+    config: true,
     type:String,
     restricted:true,
     default:"#000000"
