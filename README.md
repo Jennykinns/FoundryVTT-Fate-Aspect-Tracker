@@ -12,9 +12,12 @@ Aspects can be dragged and dropped onto the scene to create a text box with the 
 
 ![Fate Aspect Tracker with different aspects](assets/screenshot.png)
 
-![Aspect from journal](assets/general_presentation.mp4)
 
-![Aspect from journal](assets/journal_aspect_presentation.mp4)
+![Presentation](assets/presentation.gif)
+
+![Aspects from journals](assets/journal_aspects.gif)
+
+
 
 ## Aspect from Journal
 
