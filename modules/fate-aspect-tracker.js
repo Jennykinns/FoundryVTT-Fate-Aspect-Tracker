@@ -12,15 +12,18 @@ Hooks.on("renderJournalDirectory", async (_app, html, _data) => {
   await initUiComponents(html);
 });
 
-Hooks.on("getSceneControlButtons", function(controls) {
-  let tileControls = controls.find(x => x.name === "token");
-  tileControls.tools.push({
+Hooks.on("getSceneControlButtons", function(controls) { 
+  controls.tokens.tools.fateTracker = {
     icon: "fas fa-books",
-    name: "fate-aspect-tracker",
+    name: "fateTracker",
     title: game.i18n.localize("FateAspectTracker.aspecttrackerwindow.title"),
     button: true,
-    onClick: () => window.aspectTrackerWindow.render(true)
-  });
+    onChange: (event, active) => {
+      if ( active ) {
+        window.aspectTrackerWindow.render(true);
+      }
+    }
+  };
 });
 
 Hooks.on("renderApplication", function(control) {

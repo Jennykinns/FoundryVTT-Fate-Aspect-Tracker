@@ -37,7 +37,7 @@
                 {{localize 'FateAspectTracker.settings.drawing.fontColor'}}
             </td>
             <td class="settings-value">
-                {{colorPicker name="font_color" value = this.fontColor}}
+                <color-picker name="font_color" value="{{this.fontColor}}"></color-picker>
             </td>
         </tr>
         <tr>
@@ -45,7 +45,7 @@
                 {{localize 'FateAspectTracker.settings.drawing.fillColor'}}
             </td>
             <td class="settings-value">
-                {{colorPicker name="fill_color" value = this.fillColor}}
+                <color-picker name="fill_color" value="{{this.fillColor}}"></color-picker>
             </td>
         </tr>
         <tr>
@@ -53,7 +53,7 @@
                 {{localize 'FateAspectTracker.settings.drawing.fillOpacity'}}
             </td>
             <td class="settings-value">
-                {{rangePicker name="fill_opacity" value = this.fillOpacity max = "1" min = "0" step = "0.1"}}
+                <range-picker name="fill_opacity" value="{{this.fillOpacity}}" max = "1" min = "0" step = "0.1"></range-picker>
             </td>
         </tr>
         <tr>
@@ -69,7 +69,7 @@
                 {{localize 'FateAspectTracker.settings.drawing.borderColor'}}
             </td>
             <td class="settings-value">
-                {{colorPicker name="border_color" value = this.borderColor}}
+                <color-picker name="border_color" value="{{this.borderColor}}"></color-picker>
             </td>
         </tr>
         <tr>
@@ -77,7 +77,7 @@
                 {{localize 'FateAspectTracker.settings.drawing.borderOpacity'}}
             </td>
             <td class="settings-value">
-                {{rangePicker name="border_opcaity" value = this.borderOpacity max = "1" min = "0" step = "0.1"}}
+                <range-picker name="border_opcaity" value="{{this.borderOpacity}}" max = "1" min = "0" step = "0.1"></range-picker>
             </td>
         </tr>
     </table>
