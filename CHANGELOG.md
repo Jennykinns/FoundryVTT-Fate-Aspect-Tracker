@@ -1,5 +1,10 @@
 # Patch Notes:
 
+## Version 1.5.1
+
+* Add Russian language #26 @DmFors
+* V13 compatibility
+
 ## Version 1.5.0
 
 * Add the copy options on aspects #19
