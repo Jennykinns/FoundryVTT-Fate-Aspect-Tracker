@@ -1,6 +1,7 @@
 /* global game, Hooks */
 
 //import * as logger from "./logger.js";
+import { Enrichers } from "./enricher.js";
 import Socket from "./socket.js";
 import {initUiComponents} from "./ui.js";
 
@@ -33,6 +34,8 @@ Hooks.on("renderApplication", function(control) {
 });
 
 Hooks.once('init', async() => {
+  Enrichers.register();
+
   /* Game settings */
   // Border Opacity
   game.settings.register("fate-aspect-tracker", "AspectDrawingBorderOpacity", {
@@ -143,4 +146,25 @@ Hooks.once('init', async() => {
       restricted:true,
       default:""
     });
+});
+
+Hooks.on("ready", () => {
+  $(document).on("dragstart", [".fat--aspect"], (event) => {
+    const text = event.target.textContent;
+    const matches = `{${text}}`.matchAll(/([^\[\]{}]+)\-(\d+)/gi);
+    const match = [...matches][0];
+    if (!match) return;
+    const [, aspect, invoke] = match;
+    const data = {
+      id: foundry.utils.randomID(),
+      type: "aspect",
+      name: aspect,
+      tag: event.target.getAttribute("tag") || "",
+      value: invoke,
+    };
+    event.originalEvent.dataTransfer.setData(
+      "text/plain",
+      JSON.stringify(data),
+    );
+  });
 });
