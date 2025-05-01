@@ -1,0 +1,55 @@
+{
+  "FateAspectTracker.initializing": "Инициализация Aspect Tracker Manager",
+
+  "FateAspectTracker.aspectform.title": "Редактировать Аспект",
+  "FateAspectTracker.aspectform.field.color": "Цвет",
+  "FateAspectTracker.aspectform.field.tag": "Тэг",
+  "FateAspectTracker.aspectform.field.tags.none": "Пусто",
+  "FateAspectTracker.aspectform.field.tags.situation": "Ситуативный",
+  "FateAspectTracker.aspectform.field.tags.boost": "Усиление",
+  "FateAspectTracker.aspectform.field.tags.resources": "Ресурсы",
+  "FateAspectTracker.aspectform.field.description": "Описание",
+  "FateAspectTracker.aspectform.field.scope": "Глобальный?",
+  "FateAspectTracker.aspectform.field.invoke": "Призывы",
+  "FateAspectTracker.aspectform.customization": "Настройка",
+  "FateAspectTracker.aspectform.createaspect": "Создать Аспект",
+  "FateAspectTracker.aspectform.updateaspect": "Обновить Аспект",
+
+  "FateAspectTracker.aspecttrackerwindow.hideaspect": "Спрятать Аспект",
+  "FateAspectTracker.aspecttrackerwindow.increaseinvoke": "Увеличить Призывы",
+  "FateAspectTracker.aspecttrackerwindow.decreaseinvoke": "Уменьшить Призывы",
+  "FateAspectTracker.aspecttrackerwindow.title": "Fate Aspect Tracker",
+  "FateAspectTracker.aspecttrackerwindow.deleteaspect": "Удалить Аспект",
+  "FateAspectTracker.aspecttrackerwindow.copyaspect": "Копировать Аспект",
+  "FateAspectTracker.aspecttrackerwindow.editaspect": "Редактировать Аспект",
+  "FateAspectTracker.aspecttrackerwindow.newaspect": "Новый Аспект",
+  "FateAspectTracker.aspecttrackerwindow.placeholder": "На данный момент никакого аспекта нет.",
+  "FateAspectTracker.aspecttrackerwindow.tags.situation": "ситуативный",
+  "FateAspectTracker.aspecttrackerwindow.tags.boost": "усиление",
+  "FateAspectTracker.aspecttrackerwindow.tags.resources": "ресурсы",
+  "FateAspectTracker.aspecttrackerwindow.showplayers": "Показать Игрокам",
+  "FateAspectTracker.aspecttrackerwindow.global": "Глобальный",
+
+  "FateAspectTracker.aspectText.error": "Вы перетащили аспект за пределы холста",
+
+  "FateAspectTracker.aspectdrawingsettings.title": "Настройка отображения аспектов",
+  "FateAspectTracker.aspectdrawingsettings.save": "Сохранить",
+  "FateAspectTracker.aspectdrawingsettings.reset": "Сбросить",
+
+  
+  "FateAspectTracker.settings.drawing.fontSize": "Размер Шрифта",
+  "FateAspectTracker.settings.drawing.fontSizeDescription": "Процент от размера сетки.",
+  "FateAspectTracker.settings.drawing.borderOpacity": "Непрозрачность Границы",
+  "FateAspectTracker.settings.drawing.fillOpacity": "Непрозрачность Заливки",
+  "FateAspectTracker.settings.drawing.borderWidth": "Ширина Границы",
+  "FateAspectTracker.settings.drawing.fontFamily": "Семейство Шрифтов",
+  "FateAspectTracker.settings.drawing.fontDynamicColor": "Динамический Цвет Шрифта",
+  "FateAspectTracker.settings.drawing.fontDynamicColorDescription": "Цвет шрифта зависит от цвета аспекта.",
+  "FateAspectTracker.settings.drawing.fontColor": "Цвет Шрифта",
+  "FateAspectTracker.settings.drawing.fillColor": "Цвет Заливки",
+  "FateAspectTracker.settings.drawing.borderColor": "Цвет Границы",
+
+  "FateAspectTracker.settings.globalAspects": "Глобальные Аспекты",
+
+  "FateAspectTracker.macro.weatherTag": "погода"
+}
