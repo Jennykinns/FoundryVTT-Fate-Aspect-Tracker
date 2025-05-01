@@ -49,6 +49,7 @@ export class AspectTrackerWindow extends Application {
       height: 300,
       minimizable: true,
       resizable: true,
+      dragDrop: [{ dropSelector: "#fat--drop" }],
       title: game.i18n.localize("FateAspectTracker.aspecttrackerwindow.title"),
     });
   }
@@ -207,6 +208,20 @@ export class AspectTrackerWindow extends Application {
 
     return buttons;
   }
+
+  _canDragDrop() {
+		return game.user.isGM;
+	}
+
+  async _onDrop(dragEvent) {
+    const dragData = dragEvent.dataTransfer.getData("text/plain");
+		const data = JSON.parse(dragData);
+
+    if (data.type != "aspect") return;
+
+    let tracker = this.getData().tracker;
+    await tracker.addAspectFromData(data.name, data.tag, undefined, data.value);
+	}
 }
 
 class AspectForm extends FormApplication {

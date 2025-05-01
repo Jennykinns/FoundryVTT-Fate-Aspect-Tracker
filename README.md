@@ -8,13 +8,20 @@ Aspects can be dragged and dropped onto the scene to create a text box with the 
 
 **Download.** https://raw.githubusercontent.com/Galdormin/FoundryVTT-Fate-Aspect-Tracker/master/module.json
 
-## Screenshot
+## Screenshot & Videos
 
-![Fate Aspect Tracker with different aspects](screenshot.png)
+![Fate Aspect Tracker with different aspects](assets/screenshot.png)
 
-## Macros
+![Aspect from journal](assets/general_presentation.mp4)
 
-See [Macro](macro)
+![Aspect from journal](assets/journal_aspect_presentation.mp4)
+
+## Aspect from Journal
+
+You can insert aspect directly in journals (or character sheets) by using the syntax `[aspect-2]`.
+Those aspects can be dragged and dropped in the aspect tracker window.
+
+You can specify tags to the aspects with this syntax `[aspect-2/some,tags]`
 
 ## Patch Notes
 
