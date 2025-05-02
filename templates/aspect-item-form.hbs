@@ -1,53 +1,38 @@
-<form autocomplete="off">
-  <section class="aspect">
-    <fieldset class="form-group stacked">
-      <div class="form-fields">
-        <label for="fieldDescription">
-          {{ localize "FateAspectTracker.aspectform.field.description" }}
-        </label>
-        <input type="text" id="fieldDescription" class="description" name="description" value="{{ aspect.description }}" data-dtype="String" required="true">
-        <label for="fieldInvoke">
-          {{ localize "FateAspectTracker.aspectform.field.invoke" }}
-        </label>
-        <input type="number" id="fieldInvoke" class="invoke" name="invoke" value="{{ aspect.invoke }}" data-dtype="Number" required="true">
-      </div>
-    </fieldset>
+<div class="standard-form" autocomplete="off">
+  <fieldset class="form-group stacked">
+    <div class="form-fields">
+      <label for="fieldDescription">
+        {{ localize "FateAspectTracker.aspectform.field.description" }}
+      </label>
+      <input type="text" id="fieldDescription" class="description" name="description" value="{{ aspect.description }}" data-dtype="String" required="true">
+      <label for="fieldInvoke">
+        {{ localize "FateAspectTracker.aspectform.field.invoke" }}
+      </label>
+      <input type="number" id="fieldInvoke" class="invoke" name="invoke" value="{{ aspect.invoke }}" data-dtype="Number" required="true">
+    </div>
+  </fieldset>
 
-    <fieldset class="form-group stacked">
-      <legend>{{ localize "FateAspectTracker.aspectform.customization" }}</legend>
+  <fieldset class="form-group stacked">
+    <legend>{{ localize "FateAspectTracker.aspectform.customization" }}</legend>
 
-      <div class="form-fields">
-        <label for="fieldTags">
-          {{ localize "FateAspectTracker.aspectform.field.tag" }}
-        </label>
-        <input type="text" id="fieldTags" class="tags" name="tag" value="{{ aspect.tag }}" data-dtypes="String">
-      </div>
-      <div class="form-fields">
-        <label for="fieldScope" class="field-scope">
-          {{ localize "FateAspectTracker.aspectform.field.scope"}}
-        </label>
-        <input type="checkbox" id="fieldScope" data-dtype="Boolean" name="globalScope" {{ checked aspect.globalScope }}>
-        <label for="fieldUseColor" class="field-color">
-          {{ localize "FateAspectTracker.aspectform.field.color" }}
-        </label>
-        <input value="{{ aspect.color }}" {{ aspect.color }} type="color"
-          id="fieldColor" name="color" data-dtype="String">
-      </div>
-    </fieldset>
+    <div class="form-fields">
+      <label for="fieldTags">
+        {{ localize "FateAspectTracker.aspectform.field.tag" }}
+      </label>
+      <input type="text" id="fieldTags" class="tags" name="tag" value="{{ aspect.tag }}" data-dtypes="String">
+    </div>
+    <div class="form-fields">
+      <label for="fieldScope" class="field-scope">
+        {{ localize "FateAspectTracker.aspectform.field.scope"}}
+      </label>
+      <input type="checkbox" id="fieldScope" data-dtype="Boolean" name="globalScope" {{ checked aspect.globalScope }}>
+      <label for="fieldUseColor" class="field-color">
+        {{ localize "FateAspectTracker.aspectform.field.color" }}
+      </label>
+      <input value="{{ aspect.color }}" {{ aspect.color }} type="color"
+        id="fieldColor" name="color" data-dtype="String">
+    </div>
+  </fieldset>
 
-    <input type="hidden" name="index" value="{{ index }}">
-  </section>
-
-  <hr>
-
-  <footer>
-    <button type="submit" name="submit">
-      <i class="far fa-save"></i>
-      {{#if index includeZero=true}}
-      {{ localize "FateAspectTracker.aspectform.updateaspect" }}
-      {{else}}
-      {{ localize "FateAspectTracker.aspectform.createaspect" }}
-      {{/if}}
-    </button>
-  </footer>
-</form>
+  <input type="hidden" name="index" value="{{ index }}">
+</div>
