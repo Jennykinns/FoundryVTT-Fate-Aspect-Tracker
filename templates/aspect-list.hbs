@@ -1,21 +1,22 @@
-<div id="fat--drop">
-  {{#if tracker.aspects }}
-  <ol id="fate-aspect-tracker-list">
-    {{#each tracker.aspects}}
-      {{> "modules/fate-aspect-tracker/templates/partial/aspect-item.hbs" aspect=this index=@index GM=../GM}}
-    {{/each}}
-  </ol>
-  {{else}}
-  <p>
-    {{ localize "FateAspectTracker.aspecttrackerwindow.placeholder" }}
-  </p>
+<div class="fate-aspect-tracker-window">
+  <div class="fate-aspect-tracker-list" id="fat--drop">
+    {{#if tracker.aspects }}
+    <ol id="fate-aspect-tracker-list">
+      {{#each tracker.aspects}}
+        {{> "modules/fate-aspect-tracker/templates/partial/aspect-item.hbs" aspect=this index=@index GM=../GM}}
+      {{/each}}
+    </ol>
+    {{else}}
+    <p>
+      {{ localize "FateAspectTracker.aspecttrackerwindow.placeholder" }}
+    </p>
+    {{/if}}
+  </div>
+  {{#if GM}}
+  <footer>
+    <button class="aspect-new" data-action="newAspect">
+      <i class="fas fa-plus"></i> {{ localize "FateAspectTracker.aspecttrackerwindow.newaspect" }}
+    </button>
+  </footer>
   {{/if}}
 </div>
-
-{{#if GM}}
-<div class="flex0" style="flex: none;">
-  <button class="aspect-new">
-    <i class="fas fa-plus"></i> {{ localize "FateAspectTracker.aspecttrackerwindow.newaspect" }}
-  </button>
-</div>
-{{/if}}

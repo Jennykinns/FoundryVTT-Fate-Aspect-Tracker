@@ -1,3 +1,17 @@
+.fate-aspect-tracker-window {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fate-aspect-tracker-list {
+  flex: 1;
+}
+
+.aspect-new {
+  width: 100%;
+}
+
 #fate-aspect-tracker-list > li:not(:last-child):after {
   content: "";
   display: block;
@@ -5,8 +19,8 @@
   width: 95%;
   margin: 5px;
   border: none;
-  border-top: 1px solid #b5b3a4;
-  border-bottom: 1px solid #f0f0e0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
 }
 
 #fate-aspect-tracker-list .flexrow {
@@ -80,20 +94,21 @@ input.invoke::-webkit-inner-spin-button {
 }
 
 #fate-aspect-tracker-form .field-scope{
-  flex: 0.6;
+  flex: 1;
 }
 
 #fate-aspect-drawing-settings .settings-list {
   border: none;
+  margin: 0;
 }
 
-#fate-aspect-drawing-settings .settings-title {
+/* #fate-aspect-drawing-settings .settings-title {
   width: 55%;
 }
 
 #fate-aspect-drawing-settings .settings-value {
   display: flex;
-}
+} */
 
 #fate-aspect-drawing-settings span.color-picker {
   width: 20%;

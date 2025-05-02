@@ -1,6 +1,8 @@
 /* global jQuery, Handlebars, Sortable */
 /* global game, loadTemplates, Application, FormApplication, Dialog */
 
+const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api
+
 import { Aspect, Tracker } from "./tracker.js";
 import { RGBColor } from "./colors.js";
 import Socket from "./socket.js";
@@ -40,28 +42,62 @@ async function preloadTemplates() {
   return loadTemplates(templates);
 }
 
-export class AspectTrackerWindow extends Application {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "fate-aspect-tracker-app",
-      template: "modules/fate-aspect-tracker/templates/aspect-list.hbs",
+export class AspectTrackerWindow extends HandlebarsApplicationMixin(ApplicationV2) {
+
+  static DEFAULT_OPTIONS = {
+    id: "fate-aspect-tracker-app",
+    position: {
       width: 400,
-      height: 300,
+      height: 600,
+    },
+    window: {
+      icon: "fas fa-books",
+      title: "FateAspectTracker.aspecttrackerwindow.title",
       minimizable: true,
       resizable: true,
-      dragDrop: [{ dropSelector: "#fat--drop" }],
-      title: game.i18n.localize("FateAspectTracker.aspecttrackerwindow.title"),
-    });
+      controls : [
+        {
+          icon: 'fa-solid fa-palette',
+          label: 'Settings',
+          action: "showSettings",
+          visible: true,
+        },
+        {
+          icon: 'fa-solid fa-eye',
+          label: "Show players",
+          action: "showPlayer",
+          visible: true,
+        }
+      ]
+    },
+    actions: {
+      newAspect: AspectTrackerWindow.newAspect,
+      showSettings: AspectTrackerWindow.showSettings,
+      showPlayer: AspectTrackerWindow.showPlayer,
+      aspectEdit: AspectTrackerWindow.aspectActionHandler,
+      aspectCopy: AspectTrackerWindow.aspectActionHandler,
+      aspectDelete: AspectTrackerWindow.aspectActionHandler,
+      aspectToggle: AspectTrackerWindow.aspectActionHandler,
+      aspectIncrease: AspectTrackerWindow.aspectActionHandler,
+      aspectDecrease: AspectTrackerWindow.aspectActionHandler,
+    }
   }
 
-  /**
-   * Set up interactivity for the window.
-   *
-   * @param {JQuery} html is the rendered HTML provided by jQuery
-   **/
-  activateListeners(html) {
-    super.activateListeners(html);
+  static PARTS = {
+    app: {
+      template: "./modules/fate-aspect-tracker/templates/aspect-list.hbs"
+    },
+  }
 
+  get title() {
+    return game.i18n.localize(this.options.window.title);
+  }
+
+  _onRender(context, options) {
+    super._onRender(context, options);
+
+    // Move aspect item in item list
+    const html = $(this.element);
     const listEl = html.find("#fate-aspect-tracker-list").get(0);
     if (listEl) {
       Sortable.create(listEl, {
@@ -69,144 +105,68 @@ export class AspectTrackerWindow extends Application {
         onEnd: async (evt) => {
           if (evt.oldIndex == evt.newIndex) return;
 
-          const data = window.aspectTrackerWindow.getData();
-          if(data.GM) {
-            const list = data.tracker;
-            await list.moveAspect(evt.oldIndex, evt.newIndex);
+          if(game.user.isGM) {
+            const tracker = Tracker.load();
+            await tracker.moveAspect(evt.oldIndex, evt.newIndex);
           }
         },
         onSpill: async (evt) => {
-          const data = window.aspectTrackerWindow.getData();
-          if(data.GM) {
-            const list = data.tracker;
-            await list.creatTextAspect(evt.oldIndex, evt.originalEvent.clientX, evt.originalEvent.clientY);
+          if(game.user.isGM) {
+            const tracker = Tracker.load();
+            await tracker.creatTextAspect(evt.oldIndex, evt.originalEvent.clientX, evt.originalEvent.clientY);
           }
         },
       });
     }
 
-    html.on("click", "a.aspect-control", async function () {
-      const index = jQuery(this).data("index");
-      const action = jQuery(this).data("action");
+    // Aspect inline editing
+    this.element.querySelectorAll("p.aspect-description").forEach(el => {
+      el.addEventListener("click", async (e) => {
+        const index = el.dataset.index;
 
-      const list = window.aspectTrackerWindow.getData().tracker;
-
-      switch (action) {
-        case "aspect-delete":
-          await list.deleteAspect(index);
-          break;
-        case "aspect-increase-invoke":
-          await list.increaseInvoke(index);
-          break;
-        case "aspect-decrease-invoke":
-          await list.decreaseInvoke(index);
-          break;
-        case "aspect-edit":
-          new AspectForm(list.aspects[index], index).render(true);
-          break;
-        case "aspect-copy":
-          new AspectForm(list.aspects[index], undefined).render(true);
-          break;
-        case "aspect-toggle":
-          await list.toggleVisibility(index);
-          break;
-        default:
-          return;
-      }
-
-      window.aspectTrackerWindow.render(true);
-    });
-
-    html.on("dblclick", "p.aspect-description", async function () {
-      const index = jQuery(this).data("index");
-
-      const list = window.aspectTrackerWindow.getData().tracker;
-
-      await list.toggleEditing(index);
-
-      window.aspectTrackerWindow.render(true);
-    });
-
-    html.on("keypress", "p.edit-description", async function(e){
-      if(e.which === 13){
-        const index = jQuery(this).data("index");
-        const desc = jQuery(this).children().get(0).value;
-
-        const list = window.aspectTrackerWindow.getData().tracker;
-
-        let aspect = list.aspects[index];
-        aspect.description = desc;
-
-        await list.updateAspect(index, aspect);
-        await list.toggleEditing(index);
+        const tracker = Tracker.load();
+        await tracker.toggleEditing(index);
 
         window.aspectTrackerWindow.render(true);
-      }
-   });
+      })
+    })
 
-    html.on("click", "button.aspect-new", async function () {
-      new AspectForm(undefined, undefined).render(true);
-    });
+    this.element.querySelectorAll("p.edit-description").forEach(el => {
+      el.addEventListener("keypress", async (e) => {
+        if(e.which != 13) return;
 
-    // tags are colored based on the aspect color
-    html.find("#fate-aspect-tracker-list span.tag").each(function () {
-      const tag = jQuery(this);
+        const index = el.dataset.index;
+        const desc = e.target.value;
 
-      // we use the computed color if the description
-      // this lets use work with aspects that don't have a color
-      const desc = tag.siblings("p.aspect-description");
-      const color = desc.css("color");
+        const tracker = Tracker.load();
+        let aspect = tracker.aspects[index];
+        aspect.description = desc;
+
+        await tracker.updateAspect(index, aspect);
+        await tracker.toggleEditing(index);
+
+        window.aspectTrackerWindow.render(true);
+      })
+    })
+
+    // Tags are colored based on the aspect color
+    this.element.querySelectorAll('#fate-aspect-tracker-list span.tag').forEach(tag => {
+      const color = tag.getAttribute("data-color") || "#000000";
+
       const parsed = RGBColor.parse(color);
       const contrast = parsed.contrastColor();
 
-      tag.css("background-color", parsed.toCSS());
-      tag.css("color", contrast.toCSS());
-
-      // we base the border color on the regular text color
-      const control = tag.siblings("a.aspect-control");
-      const borderColor = control.css("color");
-      tag.css("border-color", borderColor);
-    });
-    
+      tag.style.backgroundColor = parsed.toCSS();
+      tag.style.color = contrast.toCSS();
+    })    
   }
 
-  /**
-   * @returns {Tracker}
-   * @returns {boolean}
-   */
-  getData() {
-    return {
+  _prepareContext() {
+    let data = {
       tracker: Tracker.load(),
       GM: game.user.isGM,
-    };
-  }
-
-  /**
-   * 
-   * 
-   */
-  _getHeaderButtons() {
-    const buttons = super._getHeaderButtons();
-
-    // Edit mode button to toggle which interactive elements are visible on the sheet.
-    if (game.user?.isGM) {
-      buttons.unshift(
-        {
-          class: "fat-drawing-setting",
-          label: "",
-          icon: "fas fa-palette",
-          onclick: async (e) => new AspectDrawingSettings().render(true),
-        },
-        {
-          class: "fat-show-player",
-          label: game.i18n.localize("FateAspectTracker.aspecttrackerwindow.showplayers"),
-          icon: "fas fa-eye",
-          onclick: (e) => Socket.showTrackerToPlayers(),
-        }  
-      );
     }
-
-    return buttons;
+    return data;
   }
 
   _canDragDrop() {
@@ -219,27 +179,83 @@ export class AspectTrackerWindow extends Application {
 
     if (data.type != "aspect") return;
 
-    let tracker = this.getData().tracker;
+    let tracker = Tracker.load();
     await tracker.addAspectFromData(data.name, data.tag, undefined, data.value);
 	}
-}
 
-class AspectForm extends FormApplication {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "fate-aspect-tracker-form",
-      template: "modules/fate-aspect-tracker/templates/aspect-item-form.hbs",
-      width: 400,
-      minimizable: false,
-      closeOnSubmit: true,
-      title: game.i18n.localize("FateAspectTracker.aspectform.title"),
-    });
+  static async newAspect() {
+    new AspectForm(undefined, undefined).render(true);
   }
 
-  /**
-   * @param {Aspect} aspect is the (optional) aspect to edit
-   * @param {number?} index is the (optional) index in the to-do list
-   **/
+  static showPlayer() {
+    if (!game.user.isGM) return;
+    Socket.showTrackerToPlayers();
+  }
+
+  static showSettings() {
+    if (!game.user.isGM) return;
+    new AspectDrawingSettings().render(true);
+  }
+
+  static async aspectActionHandler(event, target) {
+    const index = target.dataset.index;
+    const action = target.dataset.action;
+
+    const tracker = Tracker.load();
+    switch (action) {
+      case "aspectDelete":
+        await tracker.deleteAspect(index);
+        break;
+      case "aspectIncrease":
+        await tracker.increaseInvoke(index);
+        break;
+      case "aspectDecrease":
+        await tracker.decreaseInvoke(index);
+        break;
+      case "aspectEdit":
+        new AspectForm(tracker.aspects[index], index).render(true);
+        break;
+      case "aspectCopy":
+        new AspectForm(tracker.aspects[index], undefined).render(true);
+        break;
+      case "aspectToggle":
+        await tracker.toggleVisibility(index);
+        break;
+      default:
+        return;
+    }
+
+    window.aspectTrackerWindow.render(true);
+  }
+}
+
+class AspectForm extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    id: "fate-aspect-tracker-form",
+    tag: "form",
+    form: {
+      handler: AspectForm.onSubmit,
+      closeOnSubmit: true
+    },
+    position: {
+      width: 400,
+    },
+    window: {
+      icon: "fas fa-gear",
+      contentClasses: ["standard-form"],
+      title: "FateAspectTracker.aspectform.title"
+    }
+  }
+
+  static PARTS = {
+    form: {
+      template: "./modules/fate-aspect-tracker/templates/aspect-item-form.hbs"
+    },
+    footer: {
+      template: "templates/generic/form-footer.hbs",
+    },
+  }
+
   constructor(aspect, index) {
     super();
 
@@ -247,66 +263,78 @@ class AspectForm extends FormApplication {
     this.index = index;
   }
 
-  /**
-   * Set up interactivity for the form.
-   *
-   * @param {JQuery} html is the rendered HTML provided by jQuery
-   **/
-  activateListeners(html) {
-    super.activateListeners(html);
-
+  get title() {
+    return game.i18n.localize(this.options.window.title);
   }
 
-  /** @override */
-  getData() {
+  _onRender(context, options) {
+    super._onRender(context, options);
+  }
+
+  _prepareContext() {
+    const label = this.index == undefined ? "FateAspectTracker.aspectform.createaspect": "FateAspectTracker.aspectform.updateaspect";
+
     return {
       index: this.index,
-
       aspect: this.aspect,
+      buttons: [
+        { type: "submit", icon: "fa-solid fa-save", label: label }
+      ]
     };
   }
 
-  /** @override */
-  async _updateObject(_event, data) {
+  static async onSubmit(_event, _form, formData) {
+    const data = formData.object;
     const aspect = new Aspect(data.description, data.tag, data.color, data.invoke);
 
     aspect.globalScope = data.globalScope;
 
     const list = Tracker.load();
-    if (data.index) await list.updateAspect(data.index, aspect);
-    else await list.appendAspect(aspect);
+    if (data.index) {
+      await list.updateAspect(data.index, aspect);
+    } else {
+      await list.appendAspect(aspect);
+    }
 
     window.aspectTrackerWindow.render(true);
   }
 }
 
-class AspectDrawingSettings extends FormApplication {
-  static get defaultOptions() {
-    return foundry.utils.mergeObject(super.defaultOptions, {
-      id: "fate-aspect-drawing-settings",
-      template: "modules/fate-aspect-tracker/templates/aspect-drawing-settings.hbs",
+class AspectDrawingSettings extends HandlebarsApplicationMixin(ApplicationV2) {
+  static DEFAULT_OPTIONS = {
+    id: "fate-aspect-drawing-settings",
+    tag: "form",
+    form: {
+      handler: AspectDrawingSettings.onSubmit,
+      closeOnSubmit: true
+    },
+    actions: {
+      reset: AspectDrawingSettings.reset,
+    },
+    position: {
       width: 450,
-      minimizable: false,
-      closeOnSubmit: true,
-      title: game.i18n.localize("FateAspectTracker.aspectdrawingsettings.title"),
-    });
+    },
+    window: {
+      icon: "fas fa-gear",
+      contentClasses: ["standard-form"],
+      title: "FateAspectTracker.aspectdrawingsettings.title"
+    }
   }
 
-  /**
-   * Set up interactivity for the form.
-   *
-   * @param {JQuery} html is the rendered HTML provided by jQuery
-   **/
-  activateListeners(html) {
-    super.activateListeners(html);
-
-    $('#reset_drawing_settings').on('click', async event => {
-      this.reset();
-    })
+  static PARTS = {
+    form: {
+      template: "./modules/fate-aspect-tracker/templates/aspect-drawing-settings.hbs"
+    },
+    footer: {
+      template: "templates/generic/form-footer.hbs",
+    },
   }
 
-  /** @override */
-  getData() {
+  _onRender(context, options) {
+    super._onRender(context, options);
+  }
+
+  _prepareContext() {
     return {
       fontFamilies:Object.keys(CONFIG.fontDefinitions), 
       fontFamily:game.settings.get("fate-aspect-tracker","AspectDrawingFontFamily"),
@@ -317,12 +345,18 @@ class AspectDrawingSettings extends FormApplication {
       fillOpacity:game.settings.get("fate-aspect-tracker","AspectDrawingFillOpacity"),
       borderWidth:game.settings.get("fate-aspect-tracker","AspectDrawingBorderWidth"),
       borderColor:game.settings.get("fate-aspect-tracker","AspectDrawingBorderColor"),
-      borderOpacity:game.settings.get("fate-aspect-tracker","AspectDrawingBorderOpacity")
+      borderOpacity:game.settings.get("fate-aspect-tracker","AspectDrawingBorderOpacity"),
+
+      buttons: [
+        { type: "button", action: "reset", icon: "fa-solid fa-undo", label: "FateAspectTracker.aspectdrawingsettings.reset" },
+        { type: "submit", icon: "fa-solid fa-save", label: "FateAspectTracker.aspectdrawingsettings.save" }
+      ]
     };
   }
 
-  /** @override */
-  async _updateObject(_event, data) {
+  static async onSubmit(_event, _form, formData) {
+    const data = formData.object;
+
     let fontFamily = data.font_family;
     let fontSize = data.font_size;
     if (fontSize != 0) fontSize = Math.min(256, Math.max(8, fontSize));
@@ -343,11 +377,9 @@ class AspectDrawingSettings extends FormApplication {
     await game.settings.set("fate-aspect-tracker","AspectDrawingBorderWidth", borderWidth);
     await game.settings.set("fate-aspect-tracker","AspectDrawingBorderColor", borderColor);
     await game.settings.set("fate-aspect-tracker","AspectDrawingBorderOpacity", borderOpacity);
-
-    this.close();
   }
 
-  async reset() {
+  static async reset() {
     await game.settings.set("fate-aspect-tracker","AspectDrawingFontFamily", undefined);
     await game.settings.set("fate-aspect-tracker","AspectDrawingFontSize", undefined);
     await game.settings.set("fate-aspect-tracker","AspectDrawingFontDynamicColor", undefined);
@@ -357,8 +389,7 @@ class AspectDrawingSettings extends FormApplication {
     await game.settings.set("fate-aspect-tracker","AspectDrawingBorderWidth", undefined);
     await game.settings.set("fate-aspect-tracker","AspectDrawingBorderColor", undefined);
     await game.settings.set("fate-aspect-tracker","AspectDrawingBorderOpacity", undefined);
-
-    this.close();
+    this.close()
   }
 }
 
