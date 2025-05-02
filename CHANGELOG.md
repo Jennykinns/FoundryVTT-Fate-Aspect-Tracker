@@ -1,5 +1,10 @@
 # Patch Notes:
 
+## Version 1.6.0
+
+* Add journalAspects (see Readme)
+* Migration to AppV2
+
 ## Version 1.5.1
 
 * Add Russian language #26 @DmFors
